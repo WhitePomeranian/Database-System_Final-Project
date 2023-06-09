@@ -50,7 +50,7 @@ void OpenToRead(const char* filename) {
 	fwscanf(main_file, L"%[^,]%*lc", &title.course_id); 
 	fwscanf(main_file, L"%[^\n]%*lc", &title.course_name); 
     
-    while (fwscanf(main_file, L"%[^,]%*lc", &line.student_id) == 1) {; 
+    while (fwscanf(main_file, L"%[^,]%*lc", &line.student_id) == 1) { 
         wprintf(L"%ls,", line.student_id);
         fwscanf(main_file, L"%[^,]%*lc", &line.course_id);
         wprintf(L"%ls,", line.course_id);
