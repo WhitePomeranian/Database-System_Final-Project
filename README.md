@@ -20,12 +20,8 @@ DB_students.csv 為單純學號與課號之對應，請注意，學號有兩種�
 進階需求
 
 (1) 輸出時包含中文課名；
-
-
 (2) 建立 中文課名 的 index，輸入中文課名時可以輸出該課程的選課學生，如有同名稱有多門課程 (課號不同，需分開顯示)；
-
 (3) 手刻/自行實作 hash index 實作上述任意屬性的 index (實作 hash index 可以不用實作 sequence index)；
-
 (4) 手刻/自行實作 balanced tree 實作上述任意屬性的 index (實作 balanced tree index 可以不用實作 sequence index
 
 (3)、(4) 請勿使用既有 library。
