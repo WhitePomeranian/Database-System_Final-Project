@@ -30,14 +30,14 @@ Line title;
 wchar_t blockname[str_len];
 
 int main() {
-    setlocale(LC_ALL, ""); // ³]¸m¥»¦a¤ÆÀô¹Ò
+    setlocale(LC_ALL, ""); // è¨­ç½®æœ¬åœ°åŒ–ç’°å¢ƒ
     OpenToRead("DB_students_tc_utf8.csv");
     return 0;
 }
 
 void OpenToRead(const char* filename) {
 	
-	// ¶}±ÒÀÉ®×
+	// é–‹å•Ÿæª”æ¡ˆ
     main_file = fopen(filename, "r, ccs=UTF-8");
     
     if (main_file == NULL) {
@@ -45,13 +45,12 @@ void OpenToRead(const char* filename) {
         return;
     }
     
-    // ¼ĞÀY¥t¥~Åª¨ú 
+    // æ¨™é ­å¦å¤–è®€å– 
 	fwscanf(main_file, L"%[^,]%*lc", &title.student_id); 
 	fwscanf(main_file, L"%[^,]%*lc", &title.course_id); 
 	fwscanf(main_file, L"%[^\n]%*lc", &title.course_name); 
     
-    while (!feof(main_file)) {
-    	fwscanf(main_file, L"%[^,]%*lc", &line.student_id); 
+    while (fwscanf(main_file, L"%[^,]%*lc", &line.student_id) == 1) {; 
         wprintf(L"%ls,", line.student_id);
         fwscanf(main_file, L"%[^,]%*lc", &line.course_id);
         wprintf(L"%ls,", line.course_id);
@@ -80,7 +79,7 @@ void OpenToRead(const char* filename) {
 		blockname[0] = '\0';
     }
     
-    // Ãö³¬ÀÉ®×
+    // é—œé–‰æª”æ¡ˆ
     fclose(main_file);
 }
 
@@ -88,7 +87,7 @@ void OpenToWrite(const wchar_t* wfilename, Block block) {
 	char path[str_len];
 	char filename[str_len];
 	bool isNewBlock;
-	wcstombs(filename, wfilename, str_len); // wchar_t¦r¦êÂà¦¨char¦r¦ê¡C
+	wcstombs(filename, wfilename, str_len); // wchar_tå­—ä¸²è½‰æˆcharå­—ä¸²ã€‚
 	
 	if(block == STUDENT_ID) {
 		strcpy(path, ".\\Block_student_id\\");
@@ -98,10 +97,10 @@ void OpenToWrite(const wchar_t* wfilename, Block block) {
 		strcpy(path, ".\\Block_course_name\\");
 	}
 	
-	strcat(path, filename); // path¥[¤W±ı¼g¤Jªºblock¦WºÙ¡C 
+	strcat(path, filename); // pathåŠ ä¸Šæ¬²å¯«å…¥çš„blockåç¨±ã€‚ 
 	//printf("%s",path);
 	
-	// ¥Î¨Ó´ú¸Õ¬O§_¬°·sªºblock¡C 
+	// ç”¨ä¾†æ¸¬è©¦æ˜¯å¦ç‚ºæ–°çš„blockã€‚ 
 	block_file = fopen(path, "r, ccs=UTF-8");
 	if(block_file == NULL) {
 		isNewBlock = true;
@@ -110,9 +109,9 @@ void OpenToWrite(const wchar_t* wfilename, Block block) {
 	}
 	fclose(block_file);
 
-	block_file = fopen(path, "a, ccs=UTF-8");  // a¼Ò¦¡:ÀÉ®×§ÀºİÄò¼g¡A¦pªGÀÉ®×¤£¦s¦b¡A«h·s«Ø¡C  
+	block_file = fopen(path, "a, ccs=UTF-8");  // aæ¨¡å¼:æª”æ¡ˆå°¾ç«¯çºŒå¯«ï¼Œå¦‚æœæª”æ¡ˆä¸å­˜åœ¨ï¼Œå‰‡æ–°å»ºã€‚  
 	
-	if(isNewBlock) {  // ·s«Øªºblock·s¼WÄæ¦ì¼ĞÀY ¡C 
+	if(isNewBlock) {  // æ–°å»ºçš„blockæ–°å¢æ¬„ä½æ¨™é ­ ã€‚ 
 		fwprintf(block_file, L"%ls,", title.student_id);
 		fwprintf(block_file, L"%ls,", title.course_id);
 		fwprintf(block_file, L"%ls\n", title.course_name);		
@@ -135,5 +134,4 @@ unsigned CountStrLen(const wchar_t* wstr) {
 	
 	return i;
 }
-
 
