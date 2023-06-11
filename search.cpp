@@ -278,7 +278,7 @@ void printIdTable() {
 		printf("\n課程代碼-");
 		wprintf(L"%ls\n-----------------------------------------------\n", idTable[i].course_id);
 		cur = &idTable[i];
-		cur = cur->nextLink;  // 標投不印。 
+		cur = cur->nextLink;  // 標頭不印。 
 		while(cur) {
 			wprintf(L"%ls,", cur->student_id);
 			wprintf(L"%ls,", cur->course_id);
