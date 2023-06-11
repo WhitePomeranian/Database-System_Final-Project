@@ -5,10 +5,13 @@
 
 #define str_len (100)
 
-typedef struct {
+typedef struct Line {
 	wchar_t student_id[str_len];
 	wchar_t course_id[str_len];
 	wchar_t course_name[str_len];
+	
+	Line *nextLink;
+	Line *preLink;
 } Line;
 
 Line target;
@@ -16,10 +19,17 @@ Line line;
 Line title;
 FILE *block_file;
 char block[str_len];
+Line idTable[str_len];
+Line *newNode;
+Line *cur;
+unsigned idTableSize = 0;
+
+void checkId(Line x);
+void printIdTable();
 
 int main(void) {
 	
-	setlocale(LC_ALL, ""); // ³]¸m¥»¦a¤ÆÀô¹Ò
+	setlocale(LC_ALL, ""); // è¨­ç½®æœ¬åœ°åŒ–ç’°å¢ƒ
 	int option = -1;
 	
 	
@@ -30,21 +40,23 @@ int main(void) {
 		char path[str_len] = {0};
 		char blockname[str_len] = {0};
 		
-		printf("½Ð¿é¤J1¡B2¡B3©Î0¡C\n");
-		printf("(1) ¿é¤J¾Ç¸¹¥HÅã¥Ü¸Ó¾Ç¸¹¤§¾Ç¥Íªº¿ï½Ò²M³æ¡C\n");
-		printf("(2) ¿é¤J½Ò¸¹¥HÅã¥Ü¸Ó½Ò¸¹¤§½Òµ{ªº¾Ç¥Í²M³æ¡C\n");
-		printf("(3) ¿é¤J½Ò¦W¥HÅã¥Ü¸Ó½Ò¦W¤§½Òµ{ªº¾Ç¥Í²M³æ¡C\n");
-		printf("(0) Â÷¶}¡C\n\n");
-		printf("§Aªº¿ï¾Ü: ");
+		idTableSize = 0;
+		
+		printf("è«‹è¼¸å…¥1ã€2ã€3æˆ–0ã€‚\n");
+		printf("(1) è¼¸å…¥å­¸è™Ÿä»¥é¡¯ç¤ºè©²å­¸è™Ÿä¹‹å­¸ç”Ÿçš„é¸èª²æ¸…å–®ã€‚\n");
+		printf("(2) è¼¸å…¥èª²è™Ÿä»¥é¡¯ç¤ºè©²èª²è™Ÿä¹‹èª²ç¨‹çš„å­¸ç”Ÿæ¸…å–®ã€‚\n");
+		printf("(3) è¼¸å…¥èª²åä»¥é¡¯ç¤ºè©²èª²åä¹‹èª²ç¨‹çš„å­¸ç”Ÿæ¸…å–®ã€‚\n");
+		printf("(0) é›¢é–‹ã€‚\n\n");
+		printf("ä½ çš„é¸æ“‡: ");
 		scanf("%d", &option);
 		printf("\n");
 		
 		switch(option) {
 			
 			case 1:
-				printf("½Ð¿é¤J¹w¬d¸ßªº¾Ç¸¹: ");
+				printf("è«‹è¼¸å…¥é æŸ¥è©¢çš„å­¸è™Ÿ: ");
 				scanf("%ls", &target.student_id);
-				printf("\nµ²ªG¦p¤U:\n");
+				printf("\nçµæžœå¦‚ä¸‹:\n");
 				
 				wcstombs(block, target.student_id, str_len);
 				strcpy(path, ".\\Block_by_student_id\\");
@@ -54,7 +66,7 @@ int main(void) {
 				block_file = fopen(path, "r, ccs=UTF-8"); 
 				
 				if(block_file == NULL) {
-					printf("§ä¤£¨ì¸ê®Æ!\n");
+					printf("æ‰¾ä¸åˆ°è³‡æ–™!\n");
 				} else {
 					while (fwscanf(block_file, L"%[^,]%*lc", &line.student_id) == 1) {
 						wprintf(L"%ls,", line.student_id);
@@ -81,7 +93,7 @@ int main(void) {
 				    	if(block_file == NULL) {
 				    		break;
 						} else {
-							// ¼ÐÀY¥t¥~Åª¨ú 
+							// æ¨™é ­å¦å¤–è®€å– 
 							fwscanf(block_file, L"%[^,]%*lc", &title.student_id); 
 							fwscanf(block_file, L"%[^,]%*lc", &title.course_id); 
 							fwscanf(block_file, L"%[^\n]%*lc", &title.course_name); 
@@ -100,9 +112,9 @@ int main(void) {
 				
 				break;
 			case 2:
-				printf("½Ð¿é¤J¹w¬d¸ßªº½Ò¸¹: ");
+				printf("è«‹è¼¸å…¥é æŸ¥è©¢çš„èª²è™Ÿ: ");
 				scanf("%ls", &target.course_id);
-				printf("\nµ²ªG¦p¤U:\n");
+				printf("\nçµæžœå¦‚ä¸‹:\n");
 				
 				wcstombs(block, target.course_id, str_len);
 				strcpy(path, ".\\Block_by_course_id\\");
@@ -112,7 +124,7 @@ int main(void) {
 				block_file = fopen(path, "r, ccs=UTF-8"); 
 				
 				if(block_file == NULL) {
-					printf("§ä¤£¨ì¸ê®Æ!\n");
+					printf("æ‰¾ä¸åˆ°è³‡æ–™!\n");
 				} else {
 					while (fwscanf(block_file, L"%[^,]%*lc", &line.student_id) == 1) {
 						wprintf(L"%ls,", line.student_id);
@@ -139,7 +151,7 @@ int main(void) {
 				    	if(block_file == NULL) {
 				    		break;
 						} else {
-							// ¼ÐÀY¥t¥~Åª¨ú 
+							// æ¨™é ­å¦å¤–è®€å– 
 							fwscanf(block_file, L"%[^,]%*lc", &title.student_id); 
 							fwscanf(block_file, L"%[^,]%*lc", &title.course_id); 
 							fwscanf(block_file, L"%[^\n]%*lc", &title.course_name); 
@@ -158,9 +170,9 @@ int main(void) {
 				
 				break;
 			case 3:
-				printf("½Ð¿é¤J¹w¬d¸ßªº½Ò¦W: ");
+				printf("è«‹è¼¸å…¥é æŸ¥è©¢çš„èª²å: ");
 				scanf("%ls", &target.course_name);
-				printf("\nµ²ªG¦p¤U:\n");
+				printf("\nçµæžœå¦‚ä¸‹:\n");
 				
 				wcstombs(block, target.course_name, str_len);
 				strcpy(path, ".\\Block_by_course_name\\");
@@ -170,14 +182,16 @@ int main(void) {
 				block_file = fopen(path, "r, ccs=UTF-8"); 
 				
 				if(block_file == NULL) {
-					printf("§ä¤£¨ì¸ê®Æ!\n");
+					printf("æ‰¾ä¸åˆ°è³‡æ–™!\n");
 				} else {
+					// æ¨™é ­å¦å¤–è®€å– 
+					fwscanf(block_file, L"%[^,]%*lc", &title.student_id); 
+					fwscanf(block_file, L"%[^,]%*lc", &title.course_id); 
+					fwscanf(block_file, L"%[^\n]%*lc", &title.course_name);
 					while (fwscanf(block_file, L"%[^,]%*lc", &line.student_id) == 1) {
-						wprintf(L"%ls,", line.student_id);
 					    fwscanf(block_file, L"%[^,]%*lc", &line.course_id);
-					    wprintf(L"%ls,", line.course_id);
 					    fwscanf(block_file, L"%[^\n]%*lc", &line.course_name);
-					    wprintf(L"%ls\n", line.course_name);
+					    checkId(line);
 					}
 				
 					while(1) {
@@ -197,32 +211,79 @@ int main(void) {
 				    	if(block_file == NULL) {
 				    		break;
 						} else {
-							// ¼ÐÀY¥t¥~Åª¨ú 
+							// æ¨™é ­å¦å¤–è®€å– 
 							fwscanf(block_file, L"%[^,]%*lc", &title.student_id); 
 							fwscanf(block_file, L"%[^,]%*lc", &title.course_id); 
 							fwscanf(block_file, L"%[^\n]%*lc", &title.course_name); 
 							while (fwscanf(block_file, L"%[^,]%*lc", &line.student_id) == 1) {
-								wprintf(L"%ls,", line.student_id);
 							    fwscanf(block_file, L"%[^,]%*lc", &line.course_id);
-							    wprintf(L"%ls,", line.course_id);
 							    fwscanf(block_file, L"%[^\n]%*lc", &line.course_name);
-							    wprintf(L"%ls\n", line.course_name);
+							    checkId(line);
 							}
 						}
 						
 						i++;
 					}
+					
+					printIdTable();
 				}
 				break;
 			case 0:
-				printf("Â÷¶}¡C\n");
+				printf("é›¢é–‹ã€‚\n");
 				break;
 			default:
-				printf("µL®Äªº¿é¤J¡C\n");
+				printf("ç„¡æ•ˆçš„è¼¸å…¥ã€‚\n");
 				break;
 		}
 		
 		printf("----------------------------------------------------------\n\n");
 	}
 	 
+}
+
+void checkId(Line x) {
+	
+	newNode = (Line*) malloc(sizeof(Line));
+	wcscpy(newNode->student_id, x.student_id);
+	wcscpy(newNode->course_id, x.course_id);
+	wcscpy(newNode->course_name, x.course_name);
+	newNode->nextLink = NULL;
+	
+	if(idTableSize == 0) {  // ç¬¬ä¸€ç­†è³‡æ–™ã€‚ 
+		idTableSize++;
+
+		idTable[idTableSize].nextLink = newNode;
+		idTable[idTableSize].preLink = newNode;
+		wcscpy(idTable[idTableSize].course_id, x.course_id);
+	} else {
+		
+		for(int i = 1; i <= idTableSize; i++) { 
+			if(wcscmp(idTable[i].course_id, x.course_id) == 0) {  // è©²èª²è™Ÿå·²è¢«åŠ å…¥éŽã€‚ 
+				idTable[i].preLink->nextLink = newNode;
+				idTable[i].preLink = newNode;
+				return;
+			}
+		}
+		
+		idTableSize++;
+				
+		idTable[idTableSize].nextLink = newNode;
+		idTable[idTableSize].preLink = newNode;
+		wcscpy(idTable[idTableSize].course_id, x.course_id);
+	}
+}
+
+void printIdTable() {
+	for(int i = 1; i <= idTableSize; i++) {
+		printf("\nèª²ç¨‹ä»£ç¢¼-");
+		wprintf(L"%ls\n-----------------------------------------------\n", idTable[i].course_id);
+		cur = &idTable[i];
+		cur = cur->nextLink;  // æ¨™æŠ•ä¸å°ã€‚ 
+		while(cur) {
+			wprintf(L"%ls,", cur->student_id);
+			wprintf(L"%ls,", cur->course_id);
+			wprintf(L"%ls\n", cur->course_name);
+			cur = cur->nextLink;
+		}
+	}
 }
