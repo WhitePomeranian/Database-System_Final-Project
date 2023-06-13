@@ -121,7 +121,7 @@ void addCourse(const Record record){
     }
 }
 
-void printCourseInfo(const char *target_courseName){
+void printCourseInfo(unsigned block_num, const char *target_courseName){
 	unsigned first = True;
 	
     for(int i=0; i<courseLists.numCourses; i++){
@@ -129,7 +129,7 @@ void printCourseInfo(const char *target_courseName){
 
         if(strcmp(course->courseName, target_courseName) == 0){
         	if(first){
-        		printf("課程名稱: %s - %s", course->courseName, course->courseID);
+        		printf("(Block%5d)課程名稱: %s - %s", block_num, course->courseName, course->courseID);
         		printLine(50);
 			}
 			first = False;
@@ -145,19 +145,19 @@ void printCourseInfo(const char *target_courseName){
     }
 }
 
-//void freeCourseLists() {
-//    for (int i = 0; i < courseLists.numCourses; i++) {
-//        Course* course = &(courseLists.courses[i]);
-//
-//        // 釋放學生記憶體
-//        for (int j = 0; j < course->numStudents; j++) {
-//            free(course->student[j].studentName);
-//        }
-//
-//        // 釋放課程記憶體
-//        free(course->student);
-//    }
-//}
+void freeCourseLists() {
+    for (int i = 0; i < courseLists.numCourses; i++) {
+        Course* course = &(courseLists.courses[i]);
+
+        // 釋放學生記憶體
+        for (int j = 0; j < course->numStudents; j++) {
+            free(course->student[j].studentName);
+        }
+
+        // 釋放課程記憶體
+        free(course->student);
+    }
+}
 
 unsigned hash1(const char key[]){
 	unsigned value = 0;
@@ -215,7 +215,7 @@ void findRecord(unsigned block_num, const char target[], BlockType type){
 				}
 				break;
 			case COURSE_NAME:
-				printCourseInfo(target);
+				printCourseInfo(block_num, target);
 //				return NULL;
 		}
 		cur = cur->next;
@@ -330,7 +330,7 @@ int main(void){
 					init_courseLists();
 					
 					MyHash(block_num, STUDENT_ID);
-					printCourseInfo(target);
+					printCourseInfo(block_num, target);
 				}
 				printLine(65);
 				break;
