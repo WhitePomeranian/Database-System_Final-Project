@@ -9,35 +9,34 @@
 int main() {
     DIR *dir;
     struct dirent *ent;
-    char *folder_path = "C:\\Users\\ASUS\\Desktop\\test\\Block_by_course_id"; // ¸ê®Æ§¨ªº¸ô®|
+    char *folder_path = "C:\\Users\\ASUS\\Desktop\\test\\Block_by_course_id"; // è³‡æ–™å¤¾çš„è·¯å¾‘
     char file_names[MAX_FILES][MAX_FILENAME];
     char number_str[10];
     int file_count = 0;
     int number[MAX_FILES];
 
-    // ¶}±Ò¸ê®Æ§¨
+    // é–‹å•Ÿè³‡æ–™å¤¾
     dir = opendir(folder_path);
     if (dir == NULL) {
-        printf("µLªk¶}±Ò¸ê®Æ§¨\n");
+        printf("ç„¡æ³•é–‹å•Ÿè³‡æ–™å¤¾\n");
         return 1;
     }
 
-    // ¹M¾ú¸ê®Æ§¨¤¤ªºÀÉ®×
+    // éæ­·è³‡æ–™å¤¾ä¸­çš„æª”æ¡ˆ
     while ((ent = readdir(dir)) != NULL) {
-        // ½T«OÀÉ®×¦WºÙ¥H ".csv" µ²§À
+        // ç¢ºä¿æª”æ¡ˆåç¨±ä»¥ ".csv" çµå°¾
         if (strstr(ent->d_name, ".csv") != NULL) {
             strcpy(file_names[file_count], ent->d_name);
             char *paren = strchr(file_names[file_count], '.');
             if (paren != NULL)
 			{
-        		// ­pºâ¥ª¬A¸¹ªº¯Á¤Ş¦ì¸m
        			 int index = paren - file_names[file_count];
         
-        		// ´£¨ú¼Æ¦r³¡¤À
+        		// æå–æ•¸å­—éƒ¨åˆ†
        			strncpy(number_str, file_names[file_count], index);
-        		number_str[index] = '\0';  // ²K¥[µ²§ô²Å¸¹
+        		number_str[index] = '\0';  // æ·»åŠ çµæŸç¬¦è™Ÿ
         
-        		// ±N¼Æ¦r³¡¤ÀÂà´«¬°¼Æ¦r«¬§O
+        		// å°‡æ•¸å­—éƒ¨åˆ†è½‰æ›ç‚ºæ•¸å­—å‹åˆ¥
         		number[file_count] = atoi(number_str);
         	}
             file_count++;
@@ -45,10 +44,10 @@ int main() {
     }
     printf("%d\n",file_count);
 
-    // Ãö³¬¸ê®Æ§¨
+    // é—œé–‰è³‡æ–™å¤¾
     closedir(dir);
 
-    // ¦L¥X°}¦C¤¤ªºÀÉ®×¦WºÙ
+    // å°å‡ºé™£åˆ—ä¸­çš„æª”æ¡ˆåç¨±
     for (int i = 0; i < file_count; i++) {
         printf("%d\n", number[i]);
     }
